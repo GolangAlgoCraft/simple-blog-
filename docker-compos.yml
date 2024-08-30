@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  blog:
+    build: ./backend  # Build the backend service from the Dockerfile in the backend directory
+    ports:
+      - "8080:8080"  # Map port 8080 on the host to port 8080 in the container
+    volumes:
+      - ./backend:/app  # Mount the backend directory inside the container
+    depends_on:
+      - db  # Ensure the database service is started before the backend
+
+  db:
+    image: mysql:8.0  # Use the MySQL 8.0 image
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Set the MySQL root password
+      MYSQL_DATABASE: blog  # Create a database named "blog"
+      MYSQL_USER: user  # Create a MySQL user
+      MYSQL_PASSWORD: password  # Set the MySQL user password
+    ports:
+      - "3306:3306"  # Map port 3306 on the host to port 3306 in the container
+    volumes:
+      - db_data:/var/lib/mysql  # Persist database data between container restarts
+
+volumes:
+  db_data:  # Define a named volume for MySQL data
